@@ -66,19 +66,12 @@ defineProps({
                                 </td>
                                 <td class="px-6 py-4">
                                     <Link
-                                        :href="
-                                            route('projects.edit', project.id)
-                                        "
+                                        :href="route('projects.edit', project.id)"
                                         class="mr-2 font-medium text-blue-500 hover:text-blue-700"
                                         >Edit</Link
                                     >
                                     <Link
-                                        :href="
-                                            route(
-                                                'projects.destroy',
-                                                project.id
-                                            )
-                                        "
+                                        :href="route('projects.destroy', project.id)"
                                         method="delete"
                                         as="button"
                                         type="button"
