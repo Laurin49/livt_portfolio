@@ -4,30 +4,37 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
-defineProps({
-  skills: Array
+const props = defineProps({
+  skills: Array,
+  project: Object,
 });
 
 const form = useForm({
-    name: '',
+    name: props.project?.name,
     image: null,
-    project_url: '',
-    skill_id: '',
+    skill_id: props.project?.skill_id,
+    project_url: props.project?.project_url,
 });
 
 const submit = () => {
-    form.post(route('projects.store'));
+  router.post(`/projects/${props.project.id}`, {
+    _method: "put",
+    name: form.name,
+    image: form.image,
+    skill_id: form.skill_id,
+    project_url: form.project_url,
+  });
 };
 </script>
 
 <template>
-    <Head title="New Project" />
+    <Head title="Edit Project" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">New Project</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Edit Project</h2>
         </template>
 
         <div class="py-12">
@@ -39,7 +46,7 @@ const submit = () => {
                       v-model="form.skill_id" id="skill_id" name="skill_id"
                       class="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                       <option v-for="skill in skills" :key="skill.id" :value="skill.id">{{ skill.name }}</option>
-                      <InputError class="mt-2" :message="form.errors.skill_id" />
+                      <InputError class="mt-2" :message="$page.props.errors.skill_id" />
                     </select>
                   </div>
                   <div>
@@ -51,19 +58,19 @@ const submit = () => {
                           v-model="form.name"
                           autofocus
                       />
-                      <InputError class="mt-2" :message="form.errors.name" />
+                      <InputError class="mt-2" :message="$page.props.errors.name" />
                   </div>
                   <div class="mt-2">
-                      <InputLabel for="project_url" value="URL" />
-                      <TextInput
-                          id="project_url"
-                          type="text"
-                          class="block w-full mt-1"
-                          v-model="form.project_url"
-                          autofocus
-                      />
-                      <InputError class="mt-2" :message="form.errors.project_url" />
-                  </div>
+                    <InputLabel for="project_url" value="URL" />
+                    <TextInput
+                        id="project_url"
+                        type="text"
+                        class="block w-full mt-1"
+                        v-model="form.project_url"
+                        autofocus
+                    />
+                    <InputError class="mt-2" :message="$page.props.errors.project_url" />
+                </div>
                   <div class="mt-2">
                       <InputLabel for="image" value="Image" />
                       <TextInput
@@ -72,13 +79,13 @@ const submit = () => {
                           class="block w-full mt-1"
                           @input="form.image = $event.target.files[0]"
                       />
-                      <InputError class="mt-2" :message="form.errors.image" />
+                      <InputError class="mt-2" :message="$page.props.errors.image" />
                   </div>
       
       
                   <div class="flex items-center justify-end mt-4">
                       <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                          Store
+                          Update
                       </PrimaryButton>
                   </div>
               </form>
