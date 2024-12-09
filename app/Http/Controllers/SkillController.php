@@ -4,63 +4,78 @@ namespace App\Http\Controllers;
 
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class SkillController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return Inertia::render('Skills/Index');
-    }
+  /**
+   * Display a listing of the resource.
+   */
+  public function index()
+  {
+    return Inertia::render('Skills/Index');
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+  /**
+   * Show the form for creating a new resource.
+   */
+  public function create()
+  {
+    return Inertia::render('Skills/Create');
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  /**
+   * Store a newly created resource in storage.
+   */
+  public function store(Request $request)
+  {
+    $request->validate([
+      'image' => ['required', 'image'],
+      'name' => ['required', 'min:3']
+    ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Skill $skill)
-    {
-        //
-    }
+    if ($request->hasFile('image')) {
+      $image = $request->file('image')->store('skills');
+      Skill::create([
+        'name' => $request->name,
+        'image' => $image
+      ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Skill $skill)
-    {
-        //
+      return Redirect::route('skills.index');
     }
+    return Redirect::back();
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Skill $skill)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   */
+  public function show(Skill $skill)
+  {
+    //
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Skill $skill)
-    {
-        //
-    }
+  /**
+   * Show the form for editing the specified resource.
+   */
+  public function edit(Skill $skill)
+  {
+    //
+  }
+
+  /**
+   * Update the specified resource in storage.
+   */
+  public function update(Request $request, Skill $skill)
+  {
+    //
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   */
+  public function destroy(Skill $skill)
+  {
+    //
+  }
 }
